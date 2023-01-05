@@ -43,7 +43,7 @@ public class UserController {
             users.put(nextId, user);
             log.info("updated user " + user);
         } else {
-            throw new ResourceNotFoundException("User for update is not found");
+            throw new ResourceNotFoundException(String.format("User with id %d for update is not found", user.getId()));
         }
         return user;
     }

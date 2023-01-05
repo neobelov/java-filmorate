@@ -44,3 +44,9 @@ build/
 
 *.db
 db/*
+
+mvnw
+
+mvnw.cmd
+
+HELP.md

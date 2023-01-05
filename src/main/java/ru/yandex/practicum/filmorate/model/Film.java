@@ -11,7 +11,8 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 
 import javax.validation.constraints.*;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
+
+import static ru.yandex.practicum.filmorate.service.Constants.MIN_RELEASE_DATE;
 
 @Data
 public class Film {
@@ -30,11 +31,11 @@ public class Film {
     }
 
     public boolean isValid() {
-        if (getReleaseDate().isBefore(LocalDate.of(1895, 12,28))) {
-            throw new ValidationException("Release date is before 28 December 1895");
+        if (getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
+            throw new ValidationException("Release date of film is before 28 December 1895");
         }
         if (getDuration().isNegative()) {
-            throw new ValidationException("Duration is negative");
+            throw new ValidationException("Film duration is negative");
         }
         return true;
     }

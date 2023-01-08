@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
@@ -85,26 +82,24 @@ public class FilmControllerTest {
     }
 
     @Test
-    void addFilmWithWrongFields() throws Exception {
+    void addFilmReleaseDateFail() throws Exception {
         Film film = new Film("name","description",LocalDate.of(1700,12,17),Duration.ofSeconds(100));
-        assertThrows(Exception.class, () ->
-                {
-            mockMvc.perform(
+        mockMvc.perform(
                         post("/films")
                                 .content(objectMapper.writeValueAsString(film))
                                 .contentType(MediaType.APPLICATION_JSON)
-                );
-                }
-        );
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addFilmDurationFail() throws Exception {
+
         Film film2 = new Film("name","description",LocalDate.of(2022,12,17),Duration.ofSeconds(-100));
-        assertThrows(Exception.class, () ->
-                {
-                    mockMvc.perform(
-                            post("/films")
+                    mockMvc.perform(post("/films")
                                     .content(objectMapper.writeValueAsString(film2))
                                     .contentType(MediaType.APPLICATION_JSON)
-                    );
-                }
-        );
+                            )
+                            .andExpect(status().isBadRequest());
     }
 }

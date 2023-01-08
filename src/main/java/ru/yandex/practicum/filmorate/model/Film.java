@@ -1,28 +1,33 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.time.DurationMin;
-import org.springframework.boot.convert.DurationFormat;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.annotations.MinReleaseDateValidation;
+import ru.yandex.practicum.filmorate.annotations.PositiveDurationValidation;
+import ru.yandex.practicum.filmorate.exceptions.FilmLikeException;
 
 import javax.validation.constraints.*;
 import java.time.*;
-
-import static ru.yandex.practicum.filmorate.service.Constants.MIN_RELEASE_DATE;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-public class Film {
+public class Film implements StorageObject {
     private Integer id;
-    @NotNull @NotBlank @NotEmpty private String name;
-    @Size (max = 200) private String description;
+    @NotNull(message = "Film name is null")
+    @NotBlank(message = "Film name is blank")
+    @NotEmpty(message = "Film name is empty")
+    private String name;
+    @Size(max = 200, message = "Film description is longer than 200 symbols")
+    private String description;
+    @MinReleaseDateValidation(message = "Release date of film is before 28 December 1895")
     private LocalDate releaseDate;
+    @PositiveDurationValidation(message = "Film duration is negative")
     private Duration duration;
 
-    private Film() {}
+    private Set<Integer> usersWhoLiked = new HashSet<>();
+
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {
         this.name = name;
         this.description = description;
@@ -30,14 +35,13 @@ public class Film {
         this.duration = duration;
     }
 
-    public boolean isValid() {
-        if (getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            throw new ValidationException("Release date of film is before 28 December 1895");
-        }
-        if (getDuration().isNegative()) {
-            throw new ValidationException("Film duration is negative");
-        }
-        return true;
+    @JsonCreator
+    private Film(Integer id, String name, String description, LocalDate releaseDate, Duration duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
     }
 
     @JsonProperty("duration")
@@ -45,4 +49,19 @@ public class Film {
         return duration.getSeconds();
     }
 
+    public Film addLike(Integer userId) {
+        if (usersWhoLiked.contains(userId)) {
+            throw new FilmLikeException("Film with id " + id + " is already liked by User with id " + userId);
+        }
+        usersWhoLiked.add(userId);
+        return this;
+    }
+
+    public Film deleteLike(Integer userId) {
+        if (!usersWhoLiked.contains(userId)) {
+            throw new FilmLikeException("Film with id " + id + " is not liked by User with id " + userId);
+        }
+        usersWhoLiked.remove(userId);
+        return this;
+    }
 }

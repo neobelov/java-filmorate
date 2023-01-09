@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class FilmServiceClass implements FilmService {
+public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
@@ -39,7 +39,7 @@ public class FilmServiceClass implements FilmService {
         if (count.isPresent()) {
             return filmsToSort.subList(0,Integer.min(count.get(),filmsToSort.size()));
         } else {
-            return filmsToSort.subList(0, Integer.min(10,filmsToSort.size()));
+            return filmsToSort.subList(0, Integer.min(10, filmsToSort.size()));
         }
     }
 }

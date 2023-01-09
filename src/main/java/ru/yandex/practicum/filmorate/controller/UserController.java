@@ -18,13 +18,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users")
-    public List<User> getAll() {return userStorage.getAll();}
+    public List<User> getAll() {
+        return userStorage.getAll();
+    }
 
     @GetMapping("/users/{id}")
-    public User getById(@PathVariable Integer id) {return userStorage.getById(id);}
+    public User getById(@PathVariable Integer id) {
+        return userStorage.getById(id);
+    }
 
     @GetMapping("/users/{id}/friends")
-    public List<User> getFriends(@PathVariable Integer id) {return userService.getFriends(id);}
+    public List<User> getFriends(@PathVariable Integer id) {
+        return userService.getFriends(id);
+    }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
@@ -37,7 +43,9 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User update(@Valid @RequestBody User user) {return userStorage.update(user);}
+    public User update(@Valid @RequestBody User user) {
+        return userStorage.update(user);
+    }
 
     @PutMapping("/users/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
@@ -50,5 +58,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public User delete(@PathVariable Integer id) {return userStorage.delete(id);}
+    public User delete(@PathVariable Integer id) {
+        return userStorage.delete(id);
+    }
 }

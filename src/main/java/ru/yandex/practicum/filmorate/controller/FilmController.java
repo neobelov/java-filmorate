@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Slf4j
 public class FilmController {
     private final FilmStorage filmStorage;
     private final FilmService filmService;
@@ -40,7 +39,9 @@ public class FilmController {
     }
 
     @PutMapping("/films")
-    public Film update(@Valid @RequestBody Film film) {return filmStorage.update(film);}
+    public Film update(@Valid @RequestBody Film film) {
+        return filmStorage.update(film);
+    }
 
     @PutMapping("/films/{id}/like/{userId}")
     public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
@@ -48,7 +49,9 @@ public class FilmController {
     }
 
     @DeleteMapping("/films/{id}")
-    public Film delete(@PathVariable Integer id) {return filmStorage.delete(id);}
+    public Film delete(@PathVariable Integer id) {
+        return filmStorage.delete(id);
+    }
 
     @DeleteMapping("/films/{id}/like/{userId}")
     public Film unlikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {

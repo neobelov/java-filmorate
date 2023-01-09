@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 public class InMemoryStorage<T extends StorageObject> implements Storage<T> {
     private final Map<Integer, T> objects = new HashMap<>();
     private Integer nextId = 0;

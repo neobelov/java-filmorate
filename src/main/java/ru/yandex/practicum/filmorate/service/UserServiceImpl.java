@@ -9,10 +9,9 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
 
-
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class UserServiceClass implements UserService {
+public class UserServiceImpl implements UserService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     public User addFriend(Integer whoAddsId, Integer whoToAddId) {

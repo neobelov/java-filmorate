@@ -1,50 +1,64 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private Integer nextId = 0;
+    private final UserStorage userStorage;
 
-    @PostMapping("/users")
-    public User add(@Valid @RequestBody User user) {
-        if (user.isValid()) {
-            user.setId(++nextId);
-            users.put(nextId, user);
-            log.info("added user " + user);
-        }
-        return user;
-    }
+    private final UserService userService;
 
     @GetMapping("/users")
     public List<User> getAll() {
-        return new ArrayList<>(users.values());
+        return userStorage.getAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public User getById(@PathVariable Integer id) {
+        return userStorage.getById(id);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getFriends(@PathVariable Integer id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    @PostMapping("/users")
+    public User add(@Valid @RequestBody User user) {
+        return userStorage.add(user);
     }
 
     @PutMapping("/users")
     public User update(@Valid @RequestBody User user) {
-        if (user.isValid() & users.containsKey(user.getId())) {
-            users.put(nextId, user);
-            log.info("updated user " + user);
-        } else {
-            throw new ResourceNotFoundException(String.format("User with id %d for update is not found", user.getId()));
-        }
-        return user;
+        return userStorage.update(user);
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public User deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.deleteFriend(id, friendId);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public User delete(@PathVariable Integer id) {
+        return userStorage.delete(id);
     }
 }

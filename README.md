@@ -11,16 +11,16 @@ FROM users
 ```
 **Get user's friends' id's by userId:**
 ```
-SELECT friends_to
+SELECT friend_id
 FROM user_friends
 WHERE user_friends.user_id = userId
 ```
 **Get common friends' id's for users with id1 and id2:**
 ```
-SELECT friends_to
+SELECT friend_id
 FROM user_friends
 WHERE user_id = id1
-  AND user_friends.friends_to IN (SELECT friends_to
+  AND user_friends.friend_id IN (SELECT friend_id
                                   FROM user_friends
                                   WHERE user_id = id2) AS id2friends
 ```

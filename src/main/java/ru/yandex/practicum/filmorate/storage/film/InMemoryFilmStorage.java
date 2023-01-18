@@ -9,7 +9,11 @@ import ru.yandex.practicum.filmorate.storage.common.InMemoryStorage;
 
 import java.util.*;
 
-@Component
+
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InMemoryFilmStorage extends InMemoryStorage<Film> implements FilmStorage {
+    @Override
+    public List<Film> getMostPopularFilms(Optional<Integer> count) {
+        return null;
+    }
 }

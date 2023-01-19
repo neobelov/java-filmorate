@@ -91,14 +91,14 @@ public class UserControllerTest {
 
     @Test
     void addUserNameIsEmpty() throws Exception {
-        User user = new User(null,"name@gmail.com","login","", LocalDate.of(1998,1,18),null);
+        User user = new User(null,"name1@gmail.com","login1","", LocalDate.of(1998,1,18),null);
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("login"));
+                .andExpect(jsonPath("$.name").value("login1"));
     }
 
     @Test

@@ -33,7 +33,8 @@ public class GenreDbStorage extends DbStorage<Genre> implements GenreStorage {
     public List<Genre> getAll() {
         String sql =
                 "SELECT g.* " +
-                "FROM genres AS g ";
+                "FROM genres AS g " +
+                "ORDER BY g.GENRE_ID";
         return jdbcTemplate.query(sql, Maker::makeGenre);
     }
 
@@ -42,8 +43,8 @@ public class GenreDbStorage extends DbStorage<Genre> implements GenreStorage {
         try {
             String sql =
                     "SELECT g.* " +
-                            "FROM genres AS g " +
-                            "WHERE g.genre_id = ?";
+                    "FROM genres AS g " +
+                    "WHERE g.genre_id = ? ";
             return jdbcTemplate.queryForObject(sql, Maker::makeGenre, id);
         } catch (EmptyResultDataAccessException exp) {
             throw new ResourceNotFoundException("Object with id " + id + " is not found");

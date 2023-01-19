@@ -35,7 +35,8 @@ public class MPADbStorage extends DbStorage<MPA> implements MPAStorage {
     public List<MPA> getAll() {
         String sql =
                 "SELECT m.* " +
-                "FROM mpa_ratings AS m ";
+                "FROM mpa_ratings AS m " +
+                "ORDER BY m.MPA_RATING_ID";
         return jdbcTemplate.query(sql, Maker::makeMPA);
     }
 

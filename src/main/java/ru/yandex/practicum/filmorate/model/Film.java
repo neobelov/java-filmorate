@@ -26,7 +26,6 @@ public class Film implements StorageObject {
     @MinReleaseDateValidation(message = "Release date of film is before 28 December 1895")
     private LocalDate releaseDate;
     @PositiveDurationValidation(message = "Film duration is negative")
-    @NotNull (message = "Film duration is null")
     private Duration duration;
     private Set<Integer> usersWhoLiked;
     private Set<Genre> genres;

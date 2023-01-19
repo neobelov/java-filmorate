@@ -40,7 +40,8 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
                 "SELECT u.*, ARRAY_AGG (uf.FRIEND_ID) AS friend_ids, ARRAY_AGG (uf.IS_CONFIRMED) as is_confirmed " +
                 "FROM users AS u " +
                 "LEFT JOIN USER_FRIENDS UF on u.USER_ID = UF.USER_ID " +
-                "GROUP BY u.user_id";
+                "GROUP BY u.user_id " +
+                "ORDER BY u.user_id";
         return jdbcTemplate.query(sql, Maker::makeUser);
     }
 
@@ -66,7 +67,8 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
             "FROM user_friends AS uf " +
             "LEFT JOIN users u on u.USER_ID = UF.FRIEND_ID " +
             "WHERE uf.user_id = ?" +
-            "GROUP BY uf.user_id, u.USER_ID";
+            "GROUP BY uf.user_id, u.USER_ID " +
+            "ORDER BY uf.user_id";
         return jdbcTemplate.query(sql, Maker::makeUser, id);
     }
 
@@ -78,7 +80,8 @@ public class UserDbStorage extends DbStorage<User> implements UserStorage {
                 "LEFT JOIN users u on u.user_id = uf.friend_id " +
                 "WHERE uf.user_id = ?" +
                 "AND uf.friend_id IN (SELECT friend_id FROM user_friends WHERE user_id = ?) " +
-                "GROUP BY uf.user_id";
+                "GROUP BY uf.user_id " +
+                "ORDER BY uf.user_id";;
         return jdbcTemplate.query(sql, Maker::makeUser, user1id, user2id);
     }
 }

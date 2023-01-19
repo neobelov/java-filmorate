@@ -51,7 +51,8 @@ public class FilmDbStorage extends DbStorage<Film> implements FilmStorage {
             "LEFT JOIN genres AS g ON g.GENRE_ID = fg.GENRE_ID " +
             "LEFT JOIN MPA_ratings AS m ON m.MPA_rating_id = f.MPA_rating_id " +
             "LEFT JOIN film_likes AS fl on f.film_id = fl.film_id " +
-            "GROUP BY f.film_id";
+            "GROUP BY f.film_id " +
+            "ORDER BY f.film_id";
         return jdbcTemplate.query(sql, Maker::makeFilm);
     }
 

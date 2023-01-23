@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 public class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -34,7 +36,7 @@ public class UserControllerTest {
 
     @Test
     void addAndGetUser() throws Exception {
-        User user = new User("name@gmail.com","login","name",LocalDate.of(1998,1,18));
+        User user = new User(null,"name@gmail.com","login","name",LocalDate.of(1998,1,18),null);
         Integer id = objectMapper.readValue(mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))
@@ -48,6 +50,7 @@ public class UserControllerTest {
                 .andReturn().getResponse().getContentAsString(), User.class).getId();
         user.setId(id);
         MvcResult result = mockMvc.perform(get("/users")).andReturn();
+        result.getResponse().setCharacterEncoding("utf-8");
         String resultContent = result.getResponse().getContentAsString();
         List<User> list = objectMapper.readValue(resultContent, new TypeReference<List<User>>(){});
         User user2 = list.get(id-1);
@@ -66,7 +69,7 @@ public class UserControllerTest {
 
     @Test
     void addUserEmailFail() throws Exception {
-        User user = new User("name@gmail....com","login","name",LocalDate.of(1998,1,18));
+        User user = new User(null,"name@gmail....com","login","name",LocalDate.of(1998,1,18),null);
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))
@@ -77,7 +80,7 @@ public class UserControllerTest {
 
     @Test
     void addUserLoginFail() throws Exception {
-        User user = new User("name@gmail.com","","name",LocalDate.of(1998,1,18));
+        User user = new User(null,"name@gmail.com","","name",LocalDate.of(1998,1,18),null);
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))
@@ -88,19 +91,19 @@ public class UserControllerTest {
 
     @Test
     void addUserNameIsEmpty() throws Exception {
-        User user = new User("name@gmail.com","login","", LocalDate.of(1998,1,18));
+        User user = new User(null,"name1@gmail.com","login1","", LocalDate.of(1998,1,18),null);
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("login"));
+                .andExpect(jsonPath("$.name").value("login1"));
     }
 
     @Test
     void addUserBirthdayFail() throws Exception {
-        User user = new User("name@gmail.com","login","name", LocalDate.of(2200,1,18));
+        User user = new User(null,"name@gmail.com","login","name", LocalDate.of(2200,1,18),null);
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user))

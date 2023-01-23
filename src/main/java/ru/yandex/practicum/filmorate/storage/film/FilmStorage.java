@@ -7,4 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage extends Storage<Film> {
+    List<Film> getMostPopularFilms(Optional<Integer> count);
 }
